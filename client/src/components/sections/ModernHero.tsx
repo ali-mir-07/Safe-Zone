@@ -5,19 +5,21 @@ const FloatingShape = ({
     className,
     delay = 0,
     duration = 10,
-    rotate = 0
+    rotate = 0,
+    isGlass = false
 }: {
     className?: string;
     delay?: number;
     duration?: number;
     rotate?: number;
+    isGlass?: boolean;
 }) => {
     return (
         <motion.div
-            initial={{ y: 0, rotate: rotate }}
+            initial={{ y: 0, rotate: rotate, opacity: isGlass ? 0.4 : 0.2 }}
             animate={{
-                y: [0, -20, 0],
-                rotate: [rotate, rotate + 5, rotate - 5, rotate],
+                y: [0, -40, 0],
+                rotate: [rotate, rotate + 10, rotate - 10, rotate],
             }}
             transition={{
                 duration: duration,
@@ -25,7 +27,7 @@ const FloatingShape = ({
                 delay: delay,
                 ease: "easeInOut"
             }}
-            className={`absolute rounded-full pointer-events-none opacity-20 blur-xl ${className}`}
+            className={`absolute pointer-events-none ${isGlass ? 'rounded-3xl border border-white/20 bg-white/5 backdrop-blur-xl' : 'rounded-full blur-xl'} ${className}`}
         />
     );
 };
@@ -42,6 +44,22 @@ export const ModernHero = ({ onNavigate }: { onNavigate: (v: 'home' | 'mood' | '
                     rotate={-15}
                     duration={25}
                 />
+                {/* Floating Glass Cards */}
+                <FloatingShape
+                    className="w-[200px] h-[300px] top-1/4 -right-10 hidden lg:block"
+                    rotate={15}
+                    duration={15}
+                    delay={2}
+                    isGlass={true}
+                />
+                <FloatingShape
+                    className="w-[150px] h-[250px] bottom-1/4 -left-10 hidden lg:block"
+                    rotate={-10}
+                    duration={20}
+                    delay={5}
+                    isGlass={true}
+                />
+
                 <FloatingShape
                     className="w-[400px] h-[100px] bg-linear-to-r from-accent-glow/10 to-safe-300/10 top-60 right-0 blur-3xl"
                     rotate={25}
@@ -55,6 +73,7 @@ export const ModernHero = ({ onNavigate }: { onNavigate: (v: 'home' | 'mood' | '
                     duration={30}
                 />
             </div>
+
 
             {/* Content Layer */}
             <div className="relative z-10 max-w-5xl mx-auto text-center">

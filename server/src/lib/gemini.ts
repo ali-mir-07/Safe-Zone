@@ -32,6 +32,7 @@ const FALLBACKS = {
 export const generateGroundingExercise = async () => {
   try {
     const model = getGeminiModel();
+    if (!model) return FALLBACKS.grounding;
     const prompt = "Provide a quick 5-4-3-2-1 grounding exercise for someone experiencing anxiety. Keep it calm and concise.";
     const result = await model.generateContent(prompt);
     return result.response.text();
@@ -44,6 +45,7 @@ export const generateGroundingExercise = async () => {
 export const detectSentiment = async (text: string) => {
   try {
     const model = getGeminiModel();
+    if (!model) return JSON.stringify(FALLBACKS.sentiment);
     const prompt = `Analyze the sentiment and emotional state of this text: "${text}". 
         Provide a JSON response with:
         - sentiment: (positive, negative, neutral)
@@ -62,6 +64,7 @@ export const getDeescalationResponse = async (userMessage: string, user?: any) =
   const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'friend';
   try {
     const model = getGeminiModel();
+    if (!model) return FALLBACKS.deescalation(userName);
     const prompt = `
         You are 'Zen', the highly empathetic, therapeutic AI Sanctuary guide for SafeZone. 
         A user named ${userName} (who is currently seeking support) says: "${userMessage}". 
@@ -86,3 +89,4 @@ export const getDeescalationResponse = async (userMessage: string, user?: any) =
     return FALLBACKS.deescalation(userName);
   }
 };
+
