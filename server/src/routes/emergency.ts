@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { rateLimit } from 'express-rate-limit';
-import { supabase } from '../lib/supabase.js';
 import { authenticateUser } from '../middleware/auth.js';
 import { validateRequest, emergencyRequestSchema } from '../middleware/validation.js';
 
@@ -23,6 +22,7 @@ router.post(
     async (req: any, res) => {
         const { description } = req.body;
         const userId = req.user.id;
+        const supabase = req.supabase;
 
         try {
             // 1. Create the emergency request
@@ -95,3 +95,4 @@ router.post(
 );
 
 export default router;
+

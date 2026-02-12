@@ -1,11 +1,7 @@
 import { Router } from 'express';
-import { createClient } from '@supabase/supabase-js';
 import { authenticateUser } from '../middleware/auth.js';
 import { z } from 'zod';
 import { validateRequest } from '../middleware/validation.js';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const router = Router();
 
@@ -14,30 +10,18 @@ const moodLogSchema = z.object({
     notes: z.string().max(500).optional(),
 });
 
-// Create a Supabase client that is authenticated as the requesting user.
-// This is needed because RLS policies use auth.uid() to gate access.
-const getUserSupabase = (req: any) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    const client = createClient(
-        process.env.SUPABASE_URL!,
-        process.env.SUPABASE_ANON_KEY!,
-        { global: { headers: { Authorization: `Bearer ${token}` } } }
-    );
-    return client;
-};
-
 router.post('/', authenticateUser, validateRequest(moodLogSchema), async (req: any, res) => {
     const { mood_score, notes } = req.body;
     const userId = req.user.id;
-    const userSupabase = getUserSupabase(req);
+    const supabase = req.supabase;
 
     try {
-        const { data, error } = await userSupabase
+        const { data, error } = await supabase
             .from('mood_logs')
             .insert({
                 user_id: userId,
                 mood_score,
-                notes,
+                notes: notes || null,
             })
             .select()
             .single();
@@ -53,10 +37,10 @@ router.post('/', authenticateUser, validateRequest(moodLogSchema), async (req: a
 
 router.get('/history', authenticateUser, async (req: any, res) => {
     const userId = req.user.id;
-    const userSupabase = getUserSupabase(req);
+    const supabase = req.supabase;
 
     try {
-        const { data, error } = await userSupabase
+        const { data, error } = await supabase
             .from('mood_logs')
             .select('*')
             .eq('user_id', userId)
@@ -72,4 +56,5 @@ router.get('/history', authenticateUser, async (req: any, res) => {
 });
 
 export default router;
+
 

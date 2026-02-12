@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { getDeescalationResponse, detectSentiment } from '../lib/gemini.js';
 import { optionalAuthenticateUser } from '../middleware/auth.js';
-import { supabase } from '../lib/supabase.js';
 
 const router = Router();
 
@@ -32,7 +31,7 @@ router.post('/chat', optionalAuthenticateUser, async (req, res) => {
         const response = await getDeescalationResponse(message, user);
 
         // 3. Persist to Supabase
-        const { error: dbError } = await supabase.from('chat_logs').insert([
+        const { error: dbError } = await (req as any).supabase.from('chat_logs').insert([
             {
                 user_id: user?.id || null,
                 sender: 'user',

@@ -4,6 +4,7 @@ import { MoodChart } from '../components/mood/MoodChart';
 import { MoodHeatmap } from '../components/mood/MoodHeatmap';
 import { Sparkles, Calendar, PenTool } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { API_BASE_URL } from '../lib/api';
 
 export const MoodTracker = () => {
     const [mood, setMood] = useState<number | null>(null);
@@ -12,6 +13,14 @@ export const MoodTracker = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const getAuthHeaders = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        return {
+            'Content-Type': 'application/json',
+            ...(session?.access_token ? { 'Authorization': `Bearer ${session.access_token}` } : {})
+        };
+    };
+
     useEffect(() => {
         fetchHistory();
     }, []);
@@ -19,17 +28,20 @@ export const MoodTracker = () => {
     const fetchHistory = async () => {
         try {
             setError(null);
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
+            const headers = await getAuthHeaders();
+            const response = await fetch(`${API_BASE_URL}/api/mood/history`, { headers });
+
+            if (response.status === 401) {
                 setError('Please sign in to view your mood history.');
                 return;
             }
-            const { data, error: dbError } = await supabase
-                .from('mood_logs')
-                .select('*')
-                .order('created_at', { ascending: true });
 
-            if (dbError) throw dbError;
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                throw new Error(errorData?.error || `Server error (${response.status})`);
+            }
+
+            const data = await response.json();
             setHistory(data || []);
         } catch (err: any) {
             console.error('History fetch error:', err);
@@ -42,21 +54,22 @@ export const MoodTracker = () => {
         setIsSubmitting(true);
         setError(null);
         try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
+            const headers = await getAuthHeaders();
+            const response = await fetch(`${API_BASE_URL}/api/mood`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ mood_score: mood, notes: notes || null }),
+            });
+
+            if (response.status === 401) {
                 setError('Please sign in to log your mood.');
                 return;
             }
 
-            const { error: dbError } = await supabase
-                .from('mood_logs')
-                .insert({
-                    user_id: session.user.id,
-                    mood_score: mood,
-                    notes: notes || null,
-                });
-
-            if (dbError) throw dbError;
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                throw new Error(errorData?.error || `Server error (${response.status})`);
+            }
 
             setMood(null);
             setNotes('');
@@ -196,3 +209,4 @@ export const MoodTracker = () => {
         </div>
     );
 };
+
