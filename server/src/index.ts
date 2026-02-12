@@ -33,6 +33,12 @@ app.get('/api/profile-example', (req, res) => {
     res.json(exampleProfile);
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    });
+}
+
+export default app;
+
