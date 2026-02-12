@@ -4,7 +4,10 @@ import { EmergencyButton } from './components/ui/EmergencyButton';
 import { MoodTracker } from './pages/MoodTracker';
 import { AuthPage } from './pages/AuthPage';
 import { AIChatBubble } from './components/ui/AIChatBubble';
-import { BackgroundPathsDemo } from './pages/BackgroundPathsDemo';
+import { Excellences } from './pages/Excellences';
+import { Community } from './pages/Community';
+import { About } from './pages/About';
+import { Footer } from './components/ui/Footer';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Brain, Users, CloudRain } from 'lucide-react';
@@ -15,7 +18,7 @@ import { supabase } from './lib/supabase';
 import type { User } from '@supabase/supabase-js';
 
 function App() {
-  const [view, setView] = useState<'home' | 'mood' | 'demo' | 'auth'>('home');
+  const [view, setView] = useState<'home' | 'mood' | 'excellence' | 'community' | 'about' | 'auth'>('home');
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -32,14 +35,16 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleNavigate = (v: 'home' | 'mood' | 'demo' | 'auth') => {
+  const handleNavigate = (v: 'home' | 'mood' | 'excellence' | 'community' | 'about' | 'auth') => {
     // If going to mood tracker without auth, redirect to auth
     if (v === 'mood' && !user) {
       setView('auth');
       return;
     }
     setView(v);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
+
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -133,15 +138,25 @@ function App() {
 
       {view === 'auth' && <AuthPage onSuccess={() => setView('home')} />}
       {view === 'mood' && <MoodTracker />}
-      {view === 'demo' && <BackgroundPathsDemo />}
+      {view === 'excellence' && <Excellences onNavigate={handleNavigate} />}
+
+      {view === 'community' && <Community onNavigate={handleNavigate} />}
+
+      {view === 'about' && <About />}
+
+      <Footer />
 
       <EmergencyButton />
-      <div className="fixed bottom-10 left-10 z-50">
+      <div className="fixed bottom-10 left-10 z-100">
+
         <AIChatBubble />
       </div>
     </main>
   );
 }
 
+
 export default App;
+
+
 

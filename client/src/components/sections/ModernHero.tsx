@@ -30,7 +30,9 @@ const FloatingShape = ({
     );
 };
 
-export const ModernHero = ({ onNavigate }: { onNavigate: (v: 'home' | 'mood' | 'demo' | 'auth') => void }) => {
+export const ModernHero = ({ onNavigate }: { onNavigate: (v: 'home' | 'mood' | 'excellence' | 'community' | 'auth') => void }) => {
+
+
     return (
         <section className="relative min-h-[110vh] w-full flex flex-col items-center justify-center overflow-hidden bg-obsidian-deep px-6 pt-20">
             {/* Background Shapes - More organic and weightless */}
@@ -103,19 +105,20 @@ export const ModernHero = ({ onNavigate }: { onNavigate: (v: 'home' | 'mood' | '
                 >
                     <button
                         onClick={() => onNavigate('mood')}
-                        className="group relative rounded-2xl bg-white px-10 py-5 text-xl font-black text-obsidian transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_-10px_rgba(201,223,213,0.3)]"
+                        className="group relative rounded-2xl bg-white px-10 py-5 text-xl font-black text-obsidian transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_-5px_var(--color-safe-200)]"
                     >
                         <span className="flex items-center gap-2">
                             BEGIN JOURNEY
-                            <Sparkles className="text-safe-400 group-hover:scale-125 transition-transform" size={24} fill="currentColor" />
+                            <Sparkles className="text-safe-500 group-hover:scale-125 transition-transform" size={24} fill="currentColor" />
                         </span>
                     </button>
                     <button
                         onClick={() => document.getElementById('support')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="rounded-2xl border border-white/10 bg-white/3 px-10 py-5 text-xl font-bold text-white backdrop-blur-md transition-all hover:bg-white/5"
+                        className="rounded-2xl border-2 border-white/20 bg-white/5 px-10 py-5 text-xl font-bold text-white backdrop-blur-xl transition-all hover:bg-white/10 hover:border-white/40"
                     >
                         DISCOVER SAFE ZONE
                     </button>
+
                 </motion.div>
             </div>
 

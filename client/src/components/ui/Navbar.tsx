@@ -4,7 +4,7 @@ import { Shield, Menu, X, ChevronRight, LogOut } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 
 interface NavbarProps {
-    onNavigate: (v: 'home' | 'mood' | 'demo' | 'auth') => void;
+    onNavigate: (v: 'home' | 'mood' | 'excellence' | 'community' | 'about' | 'auth') => void;
     user?: User | null;
     onSignOut?: () => void;
 }
@@ -22,10 +22,13 @@ export const Navbar = ({ onNavigate, user, onSignOut }: NavbarProps) => {
     const navItems = [
         { name: 'Support', view: 'home' as const, scrollTo: 'support' },
         { name: 'Journal', view: 'mood' as const },
-        { name: 'Excellence', view: 'demo' as const },
-        { name: 'Community', view: 'home' as const, scrollTo: 'support' },
-        { name: 'About', view: 'home' as const, scrollTo: 'support' }
+        { name: 'Excellence', view: 'excellence' as const },
+        { name: 'Community', view: 'community' as const },
+        { name: 'About', view: 'about' as const }
     ];
+
+
+
 
     const handleNavClick = (item: typeof navItems[number]) => {
         onNavigate(item.view);
