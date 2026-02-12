@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Zen Palette - Sage & Seafoam */
+  --color-safe-50: #f2f7f5;
+  --color-safe-100: #e3efea;
+  --color-safe-200: #c9dfd5;
+  --color-safe-300: #a3c9b8;
+  --color-safe-400: #7eb09a;
+  --color-safe-500: #62967e;
+  --color-safe-600: #4a7761;
+  --color-safe-700: #3b5f4d;
+  --color-safe-800: #304d3f;
+  --color-safe-900: #2a3f34;
+  --color-safe-950: #16241e;
+
+  /* Dark Theme Palette - Softer Obsidian */
+  --color-obsidian: #0c0f0e;
+  --color-obsidian-soft: #161a19;
+  --color-obsidian-deep: #070908;
+
+  /* Soothing Accents */
+  --color-accent-soft: #dcd6f7;
+  /* Soft Lavender */
+  --color-accent-emergency: #ff8b8b;
+  /* Warmer, less aggressive red */
+  --color-accent-glow: #e2fef1;
+  /* Pale Mint */
+
+  /* Typography */
+  --font-sans: 'Inter', 'Outfit', system-ui, sans-serif;
+  --font-heading: 'Outfit', sans-serif;
+
+  /* Animations */
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+}
+
+:root {
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: var(--color-safe-100);
+  background-color: var(--color-obsidian-deep);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* ShadCN / Button CSS variables mapped to SafeZone theme */
+  --background: var(--color-obsidian);
+  --foreground: var(--color-safe-100);
+  --primary: var(--color-safe-400);
+  --primary-foreground: var(--color-obsidian);
+  --secondary: var(--color-obsidian-soft);
+  --secondary-foreground: var(--color-safe-200);
+  --destructive: var(--color-accent-emergency);
+  --destructive-foreground: #fff;
+  --accent: var(--color-safe-600);
+  --accent-foreground: #fff;
+  --ring: var(--color-safe-400);
+  --input: rgba(255, 255, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.08);
+  --radius: 0.75rem;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: var(--color-obsidian-deep);
+}
+
+#root {
+  width: 100%;
+}
+
+/* Glassmorphism Utility */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
