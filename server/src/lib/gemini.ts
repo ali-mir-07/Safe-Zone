@@ -6,9 +6,15 @@ dotenv.config();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export const getGeminiModel = () => {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.warn('GEMINI_API_KEY is not set in environment variables. AI will use fallbacks.');
+    return null;
+  }
   // Using gemini-2.0-flash — fast, capable, and production-ready
   return genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 };
+
 
 /**
  * Fallback values for when the Gemini API is unavailable (e.g., 429 Too Many Requests)

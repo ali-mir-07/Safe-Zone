@@ -30,25 +30,29 @@ router.post('/chat', optionalAuthenticateUser, async (req, res) => {
         // 2. Generate supportive response
         const response = await getDeescalationResponse(message, user);
 
-        // 3. Persist to Supabase
-        const { error: dbError } = await (req as any).supabase.from('chat_logs').insert([
-            {
-                user_id: user?.id || null,
-                sender: 'user',
-                message: message,
-                sentiment: typeof sentimentAnalysis === 'object' ? sentimentAnalysis : { raw: sentimentAnalysis }
-            },
-            {
-                user_id: user?.id || null,
-                sender: 'ai',
-                message: response
-            }
-        ]);
+        // 3. Persist to Supabase (Non-blocking and fail-safe)
+        try {
+            const { error: dbError } = await (req as any).supabase.from('chat_logs').insert([
+                {
+                    user_id: user?.id || null,
+                    sender: 'user',
+                    message: message,
+                    sentiment: typeof sentimentAnalysis === 'object' ? sentimentAnalysis : { raw: sentimentAnalysis }
+                },
+                {
+                    user_id: user?.id || null,
+                    sender: 'ai',
+                    message: response
+                }
+            ]);
 
-        if (dbError) {
-            console.error('Database logging error:', dbError);
-            // We don't fail the request if logging fails, but we should know about it
+            if (dbError) {
+                console.error('Database logging error (continuing...):', dbError);
+            }
+        } catch (dbEx) {
+            console.error('Database connection exception (continuing...):', dbEx);
         }
+
 
         res.json({
             response,
